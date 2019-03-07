@@ -1,5 +1,5 @@
-CC=clang-6.0
-CXX=clang++-6.0
+CC=clang-7
+CXX=clang++-7
 
 
 FOLLY=/root/proxygen/proxygen/folly
@@ -11,4 +11,4 @@ clean:
 
 Fuzzer: fuzzer.cpp
 
-	$(CXX) -o fuzzer fuzzer.cpp -I$(FOLLY)/include $(FOLLY)/_build/libfolly.so -g -lcrypto -fsanitize=fuzzer,undefined -lfolly -lboost_system -lglog
+	$(CXX) -o certfuzzer fuzzer.cpp -I$(FOLLY)/include $(FOLLY)/_build/libfolly.so -ggdb -fsanitize=fuzzer,undefined,address -lfolly -lglog -lboost_system -lglog
