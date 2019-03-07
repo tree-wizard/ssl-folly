@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include <folly/ssl/OpenSSLCertUtils.h>
-
+#include <folly/experimental/bser/Bser.h>
 #include <folly/FileUtil.h>
 #include <folly/ScopeGuard.h>
 #include <folly/String.h>
@@ -228,11 +228,11 @@ std::vector<X509UniquePtr> OpenSSLCertUtils::readCertsFromBuffer(
       // Reach end of buffer.
       break;
     }
-    throw std::runtime_error(folly::to<std::string>(
-        "Unable to parse cert ",
-        certs.size(),
-        ": ",
-        getOpenSSLErrorString(err)));
+    //throw std::runtime_error(folly::to<std::string>(
+        sformat("Unable to parse cert ");
+        //certs.size(),
+    //    ": ",
+        //getOpenSSLErrorString(err)));
   }
   return certs;
 }
@@ -263,10 +263,11 @@ std::array<uint8_t, SHA256_DIGEST_LENGTH> OpenSSLCertUtils::getDigestSha256(
 
 X509StoreUniquePtr OpenSSLCertUtils::readStoreFromFile(std::string caFile) {
   std::string certData;
-  //if (!folly::readFile(caFile.c_str(), certData)) {
+  if (!folly::readFile(caFile.c_str(), certData)) {
     //throw std::runtime_error(
       //  folly::to<std::string>("Could not read store file: ", caFile));
-  //}
+  sformat("could not read store file");
+  }
   return readStoreFromBuffer(folly::StringPiece(certData));
 }
 
@@ -279,9 +280,9 @@ X509StoreUniquePtr OpenSSLCertUtils::readStoreFromBuffer(ByteRange certRange) {
       auto err = ERR_get_error();
       if (ERR_GET_LIB(err) != ERR_LIB_X509 ||
           ERR_GET_REASON(err) != X509_R_CERT_ALREADY_IN_HASH_TABLE) {
-        throw std::runtime_error(folly::to<std::string>(
-            "Could not insert CA certificate into store: ",
-            getOpenSSLErrorString(err)));
+        //throw std::runtime_error(folly::to<std::string>(
+            sformat("Could not insert CA certificate into store: ");
+          //  getOpenSSLErrorString(err)));
       }
     }
   }
